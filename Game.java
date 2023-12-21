@@ -34,40 +34,31 @@
       */
      private void createRooms()
      {
-         Room auditoriumLobby, centerWestHallway, centerEastHallway, fortGreenePlace,
-              toNorthWestEntrance, toSouthWestEntrance, auditorium, toNorthEastEntrance,
-              toSouthEastEntrance, southEliot, murral;
+         Room dungeonunderdungeon, center, westWing, eastWing, northCells, southCells;
        
          // create the rooms
-         auditoriumLobby = new Room("in lobby outside the auditorium");
-         centerWestHallway = new Room("in the center west hallway");
-         centerEastHallway = new Room("in the center east hallway");
-         fortGreenePlace = new Room("outside center west on Fort Greene Place");
-         toNorthWestEntrance = new Room("looking toward the north west entrance");
-         toSouthWestEntrance = new Room("looking toard the south west entrance");
-         auditorium = new Room("Auditorium");
-         toNorthEastEntrance = new Room("looking toward the north east entrance");
-         toSouthEastEntrance = new Room("looking toward the south east entrance");
-         southEliot = new Room("outside center east on South Elliot"); 
-         murral = new Room("at the murral in the lobby");
-         auditorium = new Room("in the auditorium");
+         dungeonunderdungeon = new Room("in the next dungeon center");
+         center = new Room("in the dungeons center");
+         westWing = new Room("in the west wing");
+         eastWing = new Room("in the east wing");
+         northCells = new Room("in the north cells");
+         southCells = new Room("in the south cells");
+        
          
          // initialise room exits (north, east, south, west)
-         auditoriumLobby.setExits(murral, centerEastHallway, auditorium, centerWestHallway);
-         centerWestHallway.setExits(toNorthWestEntrance, auditoriumLobby, toSouthWestEntrance, fortGreenePlace);
-         centerEastHallway.setExits(toNorthEastEntrance, southEliot, toSouthEastEntrance, auditoriumLobby);
- 
-         fortGreenePlace.setExits(null, centerWestHallway, null, null);
-         toNorthWestEntrance.setExits(null, null, centerWestHallway, null);
-         toSouthWestEntrance.setExits(centerWestHallway, null, null, null);
-         auditorium.setExits(auditoriumLobby, null, null, null);
-         murral.setExits(null, null, auditoriumLobby, null);
-         southEliot.setExits(null, centerEastHallway, null, null);
-         toNorthEastEntrance.setExits(null, null, centerEastHallway, null);
-         toSouthEastEntrance.setExits(centerEastHallway, null, null, null);
+         center.setExit("downstairs", dungeonunderdungeon);
+         dungeonunderdungeon.setExit("upstairs", center);
          
  
-         currentRoom = auditoriumLobby;  // start game outside
+         center.setExits(northCells, eastWing, southCells, westWing);
+         northCells.setExits(null, null, center, null);
+         southCells.setExits(center, null, null, null);
+         eastWing.setExits(null, null, null, center);
+         westWing.setExits(null, center, null, null);
+         
+         
+ 
+         currentRoom = center;  // start game outside
      }
  
      /**
@@ -98,20 +89,13 @@
          System.out.println("World of Zuul is a new, incredibly boring adventure game.");
          System.out.println("Type 'help' if you need help.");
          System.out.println();
-         System.out.println("You are " + currentRoom.getDescription());
+        printLocationInfo();
+     }
+
+     private void printLocationInfo(){
+        System.out.println("You are " + currentRoom.getDescription());
          System.out.print("You can go: ");
-         if(currentRoom.northExit != null) {
-             System.out.print("north ");
-         }
-         if(currentRoom.eastExit != null) {
-             System.out.print("east ");
-         }
-         if(currentRoom.southExit != null) {
-             System.out.print("south ");
-         }
-         if(currentRoom.westExit != null) {
-             System.out.print("west ");
-         }
+         System.out.print(currentRoom.getExitString());
          System.out.println();
      }
  
@@ -175,40 +159,7 @@
  
          // Try to leave current room.
          Room nextRoom = null;
-         if(direction.equals("north")) {
-             nextRoom = currentRoom.northExit;
-         }
-         if(direction.equals("east")) {
-             nextRoom = currentRoom.eastExit;
-         }
-         if(direction.equals("south")) {
-             nextRoom = currentRoom.southExit;
-         }
-         if(direction.equals("west")) {
-             nextRoom = currentRoom.westExit;
-         }
- 
-         if (nextRoom == null) {
-             System.out.println("There is no door!");
-         }
-         else {
-             currentRoom = nextRoom;
-             System.out.println("You are " + currentRoom.getDescription());
-             System.out.print("Exits: ");
-             if(currentRoom.northExit != null) {
-                 System.out.print("north ");
-             }
-             if(currentRoom.eastExit != null) {
-                 System.out.print("east ");
-             }
-             if(currentRoom.southExit != null) {
-                 System.out.print("south ");
-             }
-             if(currentRoom.westExit != null) {
-                 System.out.print("west ");
-             }
-             System.out.println();
-         }
+         nextRoom = currentRoom.getExit(direction);
      }
  
      /** 

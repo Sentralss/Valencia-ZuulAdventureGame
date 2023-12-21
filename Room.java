@@ -12,13 +12,12 @@
  * @author  Michael Kölling and David J. Barnes
  * @version 2016.02.29
  */
+import java.util.HashMap;
+import java.util.Set;
 public class Room 
 {
     public String description;
-    public Room northExit;
-    public Room southExit;
-    public Room eastExit;
-    public Room westExit;
+    private HashMap<String, Room> exits;
 
     /**
      * Create a room described "description". Initially, it has
@@ -29,6 +28,7 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
+        exits = new HashMap();
     }
 
     /**
@@ -42,17 +42,24 @@ public class Room
     public void setExits(Room north, Room east, Room south, Room west) 
     {
         if(north != null) {
-            northExit = north;
+            exits.put("north", north);
         }
         if(east != null) {
-            eastExit = east;
+            exits.put("east", east);
         }
         if(south != null) {
-            southExit = south;
+            exits.put("south", south);
         }
         if(west != null) {
-            westExit = west;
+            exits.put("west", west);
         }
+    }
+    public Room getExit(String direction){
+        return exits.get(direction);
+    }
+
+    public void setExit(String direction, Room neighbor){
+        exits.put(direction, neighbor);
     }
 
     /**
@@ -63,4 +70,12 @@ public class Room
         return description;
     }
 
+    public String getExitString(){
+        String returnString = "";
+        Set<String> keys = exits.keySet();
+        for(String exit: keys){
+            returnString += " " + exit;
+        }
+        return returnString;
+    }
 }
